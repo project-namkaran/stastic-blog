@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Post</title>
+  <script src="assets/showdown.min.js"></script>
+
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+    #content img { max-width: 100%; }
+  </style>
+</head>
+<body>
+
+  <a href="index.html">← Back to Home</a>
+  <div id="content"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug');
+
+    if (!slug) {
+      document.getElementById('content').innerHTML = "<h2>Post not found</h2>";
+      throw new Error("Missing slug");
+    }
+
+    fetch(`posts/${slug}.md`)
+      .then(res => res.text())
+      .then(md => {
+        const converter = new showdown.Converter();
+        const html = converter.makeHtml(md);
+        document.getElementById('content').innerHTML = html;
+      })
+      .catch(err => {
+        document.getElementById('content').innerHTML = "<h2>Post not found</h2>";
+      });
+  </script>
+
+</body>
+</html>

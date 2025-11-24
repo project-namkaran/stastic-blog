@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Blog – Home</title>
+  <meta name="description" content="A simple static blog using Markdown posts">
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+    .post { margin-bottom: 25px; }
+    .post-title { font-size: 1.5em; margin: 0; }
+    .post-date { color: #666; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+
+  <h1>My Blog</h1>
+  <p>Welcome! Here are the latest posts:</p>
+
+  <div id="post-list"></div>
+
+  <script>
+    fetch('posts.json')
+      .then(res => res.json())
+      .then(posts => {
+        posts.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+        const container = document.getElementById('post-list');
+
+        posts.forEach(post => {
+          const html = `
+            <div class="post">
+              <a href="post.html?slug=${post.slug}">
+                <h2 class="post-title">${post.title}</h2>
+              </a>
+              <div class="post-date">${new Date(post.date).toDateString()}</div>
+              <p>${post.description}</p>
+            </div>
+          `;
+          container.innerHTML += html;
+        });
+      });
+  </script>
+<script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+
+</body>
+</html>
